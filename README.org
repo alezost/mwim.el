@@ -1,3 +1,7 @@
+[[http://www.gnu.org/licenses/gpl-3.0.txt][file:https://img.shields.io/badge/license-GPL_3-orange.svg]]
+[[http://melpa.org/#/mwim][file:http://melpa.org/packages/mwim-badge.svg]]
+[[http://stable.melpa.org/#/mwim][file:http://stable.melpa.org/packages/mwim-badge.svg]]
+
 ** About
 
 This Emacs package provides commands for moving to the beginning/end of
