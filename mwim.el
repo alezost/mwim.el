@@ -5,7 +5,6 @@
 ;; Author: Alex Kost <alezost@gmail.com>
 ;; Created: 9 Jan 2015
 ;; Version: 0.1
-;; URL: https://gitorious.org/alezost-emacs/mwim
 ;; URL: https://github.com/alezost/mwim.el
 ;; Keywords: convenience
 
