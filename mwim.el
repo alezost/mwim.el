@@ -125,7 +125,7 @@ to the end of line."
 (defun mwim-beginning-of-code-or-line ()
   "Move point to the beginning of code.
 If the point is already there, move to the beginning of line."
-  (interactive)
+  (interactive "^")
   (mwim-goto-non-current-position
    (mwim-beginning-of-code)
    (mwim-beginning-of-line)))
@@ -134,7 +134,7 @@ If the point is already there, move to the beginning of line."
 (defun mwim-beginning-of-line-or-code ()
   "Move point to the beginning of line.
 If the point is already there, move to the beginning of code."
-  (interactive)
+  (interactive "^")
   (mwim-goto-non-current-position
    (mwim-beginning-of-line)
    (mwim-beginning-of-code)))
@@ -143,7 +143,7 @@ If the point is already there, move to the beginning of code."
 (defun mwim-end-of-code-or-line ()
   "Move point to the end of code.
 If the point is already there, move to the end of line."
-  (interactive)
+  (interactive "^")
   (mwim-goto-non-current-position
    (mwim-end-of-code)
    (mwim-end-of-line)))
@@ -152,7 +152,7 @@ If the point is already there, move to the end of line."
 (defun mwim-end-of-line-or-code ()
   "Move point to the end of line.
 If the point is already there, move to the end of code."
-  (interactive)
+  (interactive "^")
   (mwim-goto-non-current-position
    (mwim-end-of-line)
    (mwim-end-of-code)))
