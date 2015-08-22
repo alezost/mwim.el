@@ -67,11 +67,12 @@ Move the point to the beginning/end of code or line."
   "Move point to position defined after evaluating EXP1.
 If the point is already there, move to position defined after
 evaluating EXP2."
-  `(goto-char
-    (let ((p1 (mwim-point-at ,exp1)))
-      (if (= (point) p1)
-          (mwim-point-at ,exp2)
-        p1))))
+  (let ((p1-var (make-symbol "p1")))
+    `(goto-char
+      (let ((,p1-var (mwim-point-at ,exp1)))
+        (if (= (point) ,p1-var)
+            (mwim-point-at ,exp2)
+          ,p1-var)))))
 
 (defun mwim-line-commented-p ()
   "Return non-nil, if the current line is commented."
