@@ -1,4 +1,4 @@
-;;; mwim.el --- Move to the beginning/end of line or code
+;;; mwim.el --- Move to the beginning/end of line or code  -*- lexical-binding: t -*-
 
 ;; Copyright © 2015 Alex Kost
 
@@ -74,16 +74,12 @@ evaluating EXP2."
             (mwim-point-at ,exp2)
           ,p1-var)))))
 
-(defun mwim-line-commented-p ()
-  "Return non-nil, if the current line is commented."
-  (comment-only-p (line-beginning-position)
-                  (line-end-position)))
-
-(defun mwim-point-in-comment-p ()
-  "Return non-nil, if the point is inside a comment."
+(defun mwim-comment-beginning ()
+  "Return position of the beginning of the current comment.
+Return nil, if not inside a comment."
   (let ((syn (syntax-ppss)))
-    (and (nth 8 syn)
-         (not (nth 3 syn)))))
+    (and (nth 4 syn)
+         (nth 8 syn))))
 
 (defun mwim-beginning-of-line ()
   "Move point to the beginning of line.
@@ -110,17 +106,23 @@ Use `mwim-end-of-line-function'."
 (defun mwim-end-of-code ()
   "Move point to the end of code.
 
-'end of code' means before a possible comment.  Comments are
-recognized in any mode that sets `syntax-ppss' properly.
+'End of code' means before a possible comment and trailing
+whitespaces.  Comments are recognized in any mode that sets
+`syntax-ppss' properly.
 
 If current line is fully commented (contains only comment), move
 to the end of line."
   (interactive "^")
   (mwim-end-of-line)
-  (unless (mwim-line-commented-p)
-    (while (mwim-point-in-comment-p)
-      (backward-char))
-    (skip-chars-backward " \t")))
+  (let ((comment-beg (mwim-comment-beginning)))
+    (when comment-beg
+      (let ((eoc (save-excursion
+                   (goto-char comment-beg)
+                   (skip-chars-backward " \t")
+                   (point))))
+        (when (< (line-beginning-position) eoc)
+          (goto-char eoc)))))
+  (skip-chars-backward " \t"))
 
 ;;;###autoload
 (defun mwim-beginning-of-code-or-line ()
