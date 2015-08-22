@@ -87,7 +87,7 @@ evaluating EXP2."
 (defun mwim-beginning-of-line ()
   "Move point to the beginning of line.
 Use `mwim-beginning-of-line-function'."
-  (interactive)
+  (interactive "^")
   (if (functionp mwim-beginning-of-line-function)
       (funcall mwim-beginning-of-line-function)
     (beginning-of-line)))
@@ -95,14 +95,14 @@ Use `mwim-beginning-of-line-function'."
 (defun mwim-end-of-line ()
   "Move point to the end of line.
 Use `mwim-end-of-line-function'."
-  (interactive)
+  (interactive "^")
   (if (functionp mwim-end-of-line-function)
       (funcall mwim-end-of-line-function)
     (end-of-line)))
 
 (defun mwim-beginning-of-code ()
   "Move point to the first non-whitespace character on the current line."
-  (interactive)
+  (interactive "^")
   (mwim-beginning-of-line)
   (skip-syntax-forward " " (line-end-position)))
 
@@ -114,7 +114,7 @@ recognized in any mode that sets `syntax-ppss' properly.
 
 If current line is fully commented (contains only comment), move
 to the end of line."
-  (interactive)
+  (interactive "^")
   (mwim-end-of-line)
   (unless (mwim-line-commented-p)
     (while (mwim-point-in-comment-p)
