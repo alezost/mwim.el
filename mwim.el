@@ -1,6 +1,6 @@
 ;;; mwim.el --- Move to the beginning/end of line or code  -*- lexical-binding: t -*-
 
-;; Copyright © 2015 Alex Kost
+;; Copyright © 2015, 2016 Alex Kost
 
 ;; Author: Alex Kost <alezost@gmail.com>
 ;; Created: 9 Jan 2015
@@ -124,38 +124,60 @@ to the end of line."
           (goto-char eoc)))))
   (skip-chars-backward " \t"))
 
+(defun mwim-interactive-args ()
+  "Auxiliary function for MWIM commands for `interactive' form."
+  (handle-shift-selection)
+  (when current-prefix-arg
+    (list (prefix-numeric-value current-prefix-arg))))
+
 ;;;###autoload
-(defun mwim-beginning-of-code-or-line ()
+(defun mwim-beginning-of-code-or-line (&optional arg)
   "Move point to the beginning of code.
-If the point is already there, move to the beginning of line."
-  (interactive "^")
+If the point is already there, move to the beginning of line.
+
+If ARG is specified, move forward (or backward) this many lines.
+See `forward-line' for details."
+  (interactive (mwim-interactive-args))
+  (when arg (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-beginning-of-code)
    (mwim-beginning-of-line)))
 
 ;;;###autoload
-(defun mwim-beginning-of-line-or-code ()
+(defun mwim-beginning-of-line-or-code (&optional arg)
   "Move point to the beginning of line.
-If the point is already there, move to the beginning of code."
-  (interactive "^")
+If the point is already there, move to the beginning of code.
+
+If ARG is specified, move forward (or backward) this many lines.
+See `forward-line' for details."
+  (interactive (mwim-interactive-args))
+  (when arg (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-beginning-of-line)
    (mwim-beginning-of-code)))
 
 ;;;###autoload
-(defun mwim-end-of-code-or-line ()
+(defun mwim-end-of-code-or-line (&optional arg)
   "Move point to the end of code.
-If the point is already there, move to the end of line."
-  (interactive "^")
+If the point is already there, move to the end of line.
+
+If ARG is specified, move forward (or backward) this many lines.
+See `forward-line' for details."
+  (interactive (mwim-interactive-args))
+  (when arg (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-end-of-code)
    (mwim-end-of-line)))
 
 ;;;###autoload
-(defun mwim-end-of-line-or-code ()
+(defun mwim-end-of-line-or-code (&optional arg)
   "Move point to the end of line.
-If the point is already there, move to the end of code."
-  (interactive "^")
+If the point is already there, move to the end of code.
+
+If ARG is specified, move forward (or backward) this many lines.
+See `forward-line' for details."
+  (interactive (mwim-interactive-args))
+  (when arg (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-end-of-line)
    (mwim-end-of-code)))
