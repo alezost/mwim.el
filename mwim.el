@@ -125,37 +125,61 @@ to the end of line."
   (skip-chars-backward " \t"))
 
 ;;;###autoload
-(defun mwim-beginning-of-code-or-line ()
+(defun mwim-beginning-of-code-or-line (arg)
   "Move point to the beginning of code.
-If the point is already there, move to the beginning of line."
-  (interactive "^")
+If the point is already there, move to the beginning of line.
+
+If ARG is not nil, move forward ARG lines first. If point reaches
+the beginning or end of the buffer, stop there."
+  (interactive "^P")
+  (when (and (numberp arg)
+             (/= arg 0))
+    (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-beginning-of-code)
    (mwim-beginning-of-line)))
 
 ;;;###autoload
-(defun mwim-beginning-of-line-or-code ()
+(defun mwim-beginning-of-line-or-code (arg)
   "Move point to the beginning of line.
-If the point is already there, move to the beginning of code."
-  (interactive "^")
+If the point is already there, move to the beginning of code.
+
+If ARG is not nil, move forward ARG lines first. If point reaches
+the beginning or end of the buffer, stop there."
+  (interactive "^P")
+  (when (and (numberp arg)
+             (/= arg 0))
+    (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-beginning-of-line)
    (mwim-beginning-of-code)))
 
 ;;;###autoload
-(defun mwim-end-of-code-or-line ()
+(defun mwim-end-of-code-or-line (arg)
   "Move point to the end of code.
-If the point is already there, move to the end of line."
-  (interactive "^")
+If the point is already there, move to the end of line.
+
+If ARG is not nil, move forward ARG lines first. If point reaches
+the beginning or end of the buffer, stop there."
+  (interactive "^P")
+  (when (and (numberp arg)
+             (/= arg 0))
+    (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-end-of-code)
    (mwim-end-of-line)))
 
 ;;;###autoload
-(defun mwim-end-of-line-or-code ()
+(defun mwim-end-of-line-or-code (arg)
   "Move point to the end of line.
-If the point is already there, move to the end of code."
-  (interactive "^")
+If the point is already there, move to the end of code.
+
+If ARG is not nil, move forward ARG lines first. If point reaches
+the beginning or end of the buffer, stop there."
+  (interactive "^P")
+  (when (and (numberp arg)
+             (/= arg 0))
+    (forward-line arg))
   (mwim-goto-non-current-position
    (mwim-end-of-line)
    (mwim-end-of-code)))
