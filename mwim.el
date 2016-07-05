@@ -124,63 +124,43 @@ to the end of line."
           (goto-char eoc)))))
   (skip-chars-backward " \t"))
 
-(defun mwim-interactive-args ()
-  "Auxiliary function for MWIM commands for `interactive' form."
-  (handle-shift-selection)
-  (when current-prefix-arg
-    (list (prefix-numeric-value current-prefix-arg))))
-
-;;;###autoload
-(defun mwim-beginning-of-code-or-line (&optional arg)
-  "Move point to the beginning of code.
-If the point is already there, move to the beginning of line.
-
-If ARG is specified, move forward (or backward) this many lines.
-See `forward-line' for details."
-  (interactive (mwim-interactive-args))
-  (when arg (forward-line arg))
-  (mwim-goto-non-current-position
-   (mwim-beginning-of-code)
-   (mwim-beginning-of-line)))
-
-;;;###autoload
-(defun mwim-beginning-of-line-or-code (&optional arg)
-  "Move point to the beginning of line.
-If the point is already there, move to the beginning of code.
+(defmacro mwim-define-command (position object1 object2)
+  "Define `mwim-POSITION-of-OBJECT1-or-OBJECT2' command.
+POSITION is either `beginning' or `end'.
+OBJECT1 and OBJECT2 can be `line' or `code'."
+  (let* ((format-str  "mwim-%S-of-%S")
+         (direct-fun  (intern (format format-str position object1)))
+         (inverse-fun (intern (format format-str position object2)))
+         (fun-name    (intern (format "mwim-%S-of-%S-or-%S"
+                                      position object1 object2))))
+    `(defun ,fun-name (&optional arg)
+       ,(format "Move point to the %S of %S.
+If the point is already there, move to the %S of %S.
 
 If ARG is specified, move forward (or backward) this many lines.
 See `forward-line' for details."
-  (interactive (mwim-interactive-args))
-  (when arg (forward-line arg))
-  (mwim-goto-non-current-position
-   (mwim-beginning-of-line)
-   (mwim-beginning-of-code)))
+                position object1 position object2)
+       (interactive
+        (progn
+          (handle-shift-selection)
+          (when current-prefix-arg
+            (list (prefix-numeric-value current-prefix-arg)))))
+       (if (or (null arg) (= 0 arg))
+           (mwim-goto-non-current-position
+            (,direct-fun)
+            (,inverse-fun))
+         (forward-line arg)
+         (,direct-fun)))))
 
-;;;###autoload
-(defun mwim-end-of-code-or-line (&optional arg)
-  "Move point to the end of code.
-If the point is already there, move to the end of line.
+(mwim-define-command beginning line code)
+(mwim-define-command beginning code line)
+(mwim-define-command end line code)
+(mwim-define-command end code line)
 
-If ARG is specified, move forward (or backward) this many lines.
-See `forward-line' for details."
-  (interactive (mwim-interactive-args))
-  (when arg (forward-line arg))
-  (mwim-goto-non-current-position
-   (mwim-end-of-code)
-   (mwim-end-of-line)))
-
-;;;###autoload
-(defun mwim-end-of-line-or-code (&optional arg)
-  "Move point to the end of line.
-If the point is already there, move to the end of code.
-
-If ARG is specified, move forward (or backward) this many lines.
-See `forward-line' for details."
-  (interactive (mwim-interactive-args))
-  (when arg (forward-line arg))
-  (mwim-goto-non-current-position
-   (mwim-end-of-line)
-   (mwim-end-of-code)))
+;;;###autoload (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
+;;;###autoload (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
+;;;###autoload (autoload 'mwim-end-of-line-or-code "mwim" nil t)
+;;;###autoload (autoload 'mwim-end-of-code-or-line "mwim" nil t)
 
 (provide 'mwim)
 
