@@ -8,7 +8,7 @@ This Emacs package provides commands for moving to the beginning/end of
 code or line.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code from
 this page is used).  =mwim= stands for =Move Where I Mean=.
 
-[[https://raw.github.com/alezost/mwim.el/master/demo.gif]]
+[[file:demo.gif]]
 
 ** Installation
 
