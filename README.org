@@ -47,10 +47,8 @@ You may bind some keys to some of those commands in a usual manner, for
 example:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-a") 'mwim-beginning-of-code-or-line)
-(global-set-key (kbd "C-e") 'mwim-end-of-code-or-line)
-(global-set-key (kbd "<home>") 'mwim-beginning-of-line-or-code)
-(global-set-key (kbd "<end>") 'mwim-end-of-line-or-code)
+(global-set-key [remap move-beginning-of-line] #'mwim-beginning-of-code-or-line)
+(global-set-key [remap move-end-of-line] #'mwim-end-of-code-or-line)
 #+END_SRC
 
 Note that =shift-selection= is supported, which means if you press
