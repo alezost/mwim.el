@@ -5,8 +5,8 @@
 ** About
 
 This Emacs package provides commands for moving to the beginning/end of
-code or line.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code from
-this page is used).  =mwim= stands for =Move Where I Mean=.
+code, line or comment.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code
+from this page is used).  =mwim= stands for =Move Where I Mean=.
 
 [[file:demo.gif]]
 
@@ -26,6 +26,7 @@ For the manual installation, clone the repo, add the directory to
 (add-to-list 'load-path "/path/to/mwim-dir")
 (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
 (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
+(autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
 (autoload 'mwim-end-of-code-or-line "mwim" nil t)
 (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 #+END_SRC
@@ -42,6 +43,9 @@ As you can see in the gif demonstration:
 
 =M-x mwim-beginning-of-line-or-code= and =M-x mwim-end-of-line-or-code=
 do the same but in a reverse order.
+
+Also there is =M-x mwim-beginning-of-code-or-line-or-comment= command
+that switches the point between these 3 positions.
 
 You may bind some keys to some of those commands in a usual manner, for
 example:

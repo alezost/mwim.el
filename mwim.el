@@ -25,13 +25,15 @@
 
 ;; MWIM stands for "Move Where I Mean".  This package is inspired by
 ;; <http://www.emacswiki.org/emacs/BackToIndentationOrBeginning>.  It
-;; provides commands for moving to the beginning/end of code or line.
+;; provides commands for moving to the beginning/end of code, line or
+;; comment.
 
 ;; To install the package manually, add the following to your init file:
 ;;
 ;;   (add-to-list 'load-path "/path/to/mwim-dir")
 ;;   (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
 ;;   (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
+;;   (autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
 ;;   (autoload 'mwim-end-of-code-or-line "mwim" nil t)
 ;;   (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 
@@ -125,6 +127,17 @@ Return nil, if not inside a comment."
     (and (nth 4 syn)
          (nth 8 syn))))
 
+(defun mwim-beginning-of-comment ()
+  "Move point to the beginning of comment on the current line.
+If the comment does not exist, do nothing."
+  (interactive "^")
+  (let ((comment-beg (save-excursion
+                       (mwim-end-of-line)
+                       (mwim-comment-beginning))))
+    (when (and comment-beg
+               (< (line-beginning-position) comment-beg))
+      (goto-char comment-beg))))
+
 (defun mwim-beginning-of-line ()
   "Move point to the beginning of line.
 Use `mwim-beginning-of-line-function'."
@@ -171,7 +184,7 @@ to the end of line."
 (defmacro mwim-define-command (position &rest objects)
   "Define `mwim-POSITION-of-OBJECT1-or-OBJECT2-or-...' command.
 POSITION is either `beginning' or `end'.
-OBJECT1 and OBJECT2 can be `line' or `code'."
+OBJECT1 and OBJECT2 can be `line', `code' or `comment'."
   (let* ((format-str  "mwim-%S-of-%S")
          (object1     (car objects))
          (direct-fun  (intern (format format-str position object1)))
@@ -204,11 +217,13 @@ See `forward-line' for details.")
 
 (mwim-define-command beginning line code)
 (mwim-define-command beginning code line)
+(mwim-define-command beginning code line comment)
 (mwim-define-command end line code)
 (mwim-define-command end code line)
 
 ;;;###autoload (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
 ;;;###autoload (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
+;;;###autoload (autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
 ;;;###autoload (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 ;;;###autoload (autoload 'mwim-end-of-code-or-line "mwim" nil t)
 
