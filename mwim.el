@@ -127,15 +127,22 @@ Return nil, if not inside a comment."
     (and (nth 4 syn)
          (nth 8 syn))))
 
+(defun mwim-line-comment-beginning ()
+  "Return position of the beginning of comment on the current line.
+Return nil, if there is no comment beginning on the current line."
+  (let ((beg (save-excursion
+               (end-of-line)
+               (mwim-current-comment-beginning))))
+    (and beg
+         (<= (line-beginning-position) beg)
+         beg)))
+
 (defun mwim-beginning-of-comment ()
   "Move point to the beginning of comment on the current line.
 If the comment does not exist, do nothing."
   (interactive "^")
-  (let ((comment-beg (save-excursion
-                       (mwim-end-of-line)
-                       (mwim-current-comment-beginning))))
-    (when (and comment-beg
-               (< (line-beginning-position) comment-beg))
+  (let ((comment-beg (mwim-line-comment-beginning)))
+    (when comment-beg
       (goto-char comment-beg))))
 
 (defun mwim-beginning-of-line ()
