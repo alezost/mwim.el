@@ -63,10 +63,11 @@ Move the point to the beginning/end of code or line."
   "Return point after evaluating BODY in `save-excursion'."
   `(save-excursion ,@body (point)))
 
-(defmacro mwim-goto-non-current-position (exp1 exp2)
+(defmacro mwim-goto-next-position (exp1 exp2)
   "Move point to position defined after evaluating EXP1.
 If the point is already there, move to position defined after
 evaluating EXP2."
+  (declare (indent 0))
   (let ((p1-var (make-symbol "p1")))
     `(goto-char
       (let ((,p1-var (mwim-point-at ,exp1)))
@@ -146,9 +147,9 @@ See `forward-line' for details."
           (when current-prefix-arg
             (list (prefix-numeric-value current-prefix-arg)))))
        (if (or (null arg) (= 0 arg))
-           (mwim-goto-non-current-position
-            (,direct-fun)
-            (,inverse-fun))
+           (mwim-goto-next-position
+             (,direct-fun)
+             (,inverse-fun))
          (forward-line arg)
          (,direct-fun)))))
 
