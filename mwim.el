@@ -120,7 +120,7 @@ evaluating the second expression from the list of EXPRESSIONS, etc."
     `(let ((,point-var (point)))
        (goto-char (mwim-next-position ,point-var nil ,@expressions)))))
 
-(defun mwim-comment-beginning ()
+(defun mwim-current-comment-beginning ()
   "Return position of the beginning of the current comment.
 Return nil, if not inside a comment."
   (let ((syn (syntax-ppss)))
@@ -133,7 +133,7 @@ If the comment does not exist, do nothing."
   (interactive "^")
   (let ((comment-beg (save-excursion
                        (mwim-end-of-line)
-                       (mwim-comment-beginning))))
+                       (mwim-current-comment-beginning))))
     (when (and comment-beg
                (< (line-beginning-position) comment-beg))
       (goto-char comment-beg))))
@@ -171,7 +171,7 @@ If current line is fully commented (contains only comment), move
 to the end of line."
   (interactive "^")
   (mwim-end-of-line)
-  (let ((comment-beg (mwim-comment-beginning)))
+  (let ((comment-beg (mwim-current-comment-beginning)))
     (when comment-beg
       (let ((eoc (save-excursion
                    (goto-char comment-beg)
