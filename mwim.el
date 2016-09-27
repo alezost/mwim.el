@@ -178,12 +178,11 @@ If current line is fully commented (contains only comment), move
 to the end of line."
   (interactive "^")
   (mwim-end-of-line)
-  (let ((comment-beg (mwim-current-comment-beginning)))
+  (let ((comment-beg (mwim-line-comment-beginning)))
     (when comment-beg
-      (let ((eoc (save-excursion
+      (let ((eoc (mwim-point-at
                    (goto-char comment-beg)
-                   (skip-chars-backward " \t")
-                   (point))))
+                   (skip-chars-backward " \t"))))
         (when (< (line-beginning-position) eoc)
           (goto-char eoc)))))
   (skip-chars-backward " \t"))
