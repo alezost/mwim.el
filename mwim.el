@@ -168,22 +168,27 @@ to the end of line."
           (goto-char eoc)))))
   (skip-chars-backward " \t"))
 
-(defmacro mwim-define-command (position object1 object2)
-  "Define `mwim-POSITION-of-OBJECT1-or-OBJECT2' command.
+(defmacro mwim-define-command (position &rest objects)
+  "Define `mwim-POSITION-of-OBJECT1-or-OBJECT2-or-...' command.
 POSITION is either `beginning' or `end'.
 OBJECT1 and OBJECT2 can be `line' or `code'."
   (let* ((format-str  "mwim-%S-of-%S")
+         (object1     (car objects))
          (direct-fun  (intern (format format-str position object1)))
-         (inverse-fun (intern (format format-str position object2)))
-         (fun-name    (intern (format "mwim-%S-of-%S-or-%S"
-                                      position object1 object2))))
+         (fun-name    (intern
+                       (concat "mwim-" (symbol-name position) "-of-"
+                               (mapconcat #'symbol-name objects "-or-")))))
     `(defun ,fun-name (&optional arg)
-       ,(format "Move point to the %S of %S.
-If the point is already there, move to the %S of %S.
-
+       ,(concat (format "Move point to the %S of %S."
+                        position object1)
+                (mapconcat (lambda (object)
+                             (format "
+If the point is already there, move to the %S of %S."
+                                     position object))
+                           (cdr objects) "")
+                "\n
 If ARG is specified, move forward (or backward) this many lines.
-See `forward-line' for details."
-                position object1 position object2)
+See `forward-line' for details.")
        (interactive
         (progn
           (handle-shift-selection)
@@ -191,8 +196,9 @@ See `forward-line' for details."
             (list (prefix-numeric-value current-prefix-arg)))))
        (if (or (null arg) (= 0 arg))
            (mwim-goto-next-position
-             (,direct-fun)
-             (,inverse-fun))
+             ,@(mapcar (lambda (object)
+                         `(,(intern (format format-str position object))))
+                       objects))
          (forward-line arg)
          (,direct-fun)))))
 
