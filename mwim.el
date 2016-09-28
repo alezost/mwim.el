@@ -63,6 +63,7 @@ Move the point to the beginning/end of code or line."
 
 (defmacro mwim-point-at (&rest body)
   "Return point after evaluating BODY in `save-excursion'."
+  (declare (debug t) (indent 0))
   `(save-excursion ,@body (point)))
 
 (defmacro mwim-first-position (position &rest expressions)
