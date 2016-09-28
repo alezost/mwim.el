@@ -133,7 +133,13 @@ Return nil, if not inside a comment."
 Return nil, if there is no comment beginning on the current line."
   (let ((beg (save-excursion
                (end-of-line)
-               (mwim-current-comment-beginning))))
+               (or (mwim-current-comment-beginning)
+                   ;; There may be a marginal block comment, see
+                   ;; <https://github.com/alezost/mwim.el/issues/3>.
+                   (progn
+                     (skip-chars-backward " \t")
+                     (backward-char)
+                     (mwim-current-comment-beginning))))))
     (and beg
          (<= (line-beginning-position) beg)
          beg)))
