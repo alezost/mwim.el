@@ -81,8 +81,9 @@ the same as POSITION, return nil."
     (let ((pos-var   (make-symbol "pos"))
           (first-exp (car expressions))
           (rest-exps (cdr expressions)))
-      `(let ((,pos-var (mwim-point-at ,first-exp)))
-         (if (= ,position ,pos-var)
+      `(let ((,pos-var ,first-exp))
+         (if (or (null ,pos-var)
+                 (= ,position ,pos-var))
              (mwim-first-position ,position ,@rest-exps)
            ,pos-var)))))
 
@@ -104,8 +105,8 @@ the first position."
     (let ((pos-var   (make-symbol "pos"))
           (first-exp (car expressions))
           (rest-exps (cdr expressions)))
-      `(let ((,pos-var (mwim-point-at ,first-exp)))
-         (if (= ,position ,pos-var)
+      `(let ((,pos-var ,first-exp))
+         (if (and ,pos-var (= ,position ,pos-var))
              (or (mwim-first-position ,position ,@rest-exps)
                  ,fallback-position
                  ,position)
@@ -120,6 +121,9 @@ evaluating the second expression from the list of EXPRESSIONS, etc."
   (let ((point-var (make-symbol "pos")))
     `(let ((,point-var (point)))
        (goto-char (mwim-next-position ,point-var nil ,@expressions)))))
+
+
+;;; Position functions
 
 (defun mwim-current-comment-beginning ()
   "Return position of the beginning of the current comment.
@@ -143,6 +147,31 @@ Return nil, if there is no comment beginning on the current line."
     (and beg
          (<= (line-beginning-position) beg)
          beg)))
+
+;; For using in `mwim-define-command' macro to generate commands to move
+;; to the beginning of comment.
+(defalias 'mwim-comment-beginning #'mwim-line-comment-beginning)
+
+(defun mwim-line-beginning ()
+  "Return position in the beginning of line.
+Use `mwim-beginning-of-line-function'."
+  (mwim-point-at (mwim-beginning-of-line)))
+
+(defun mwim-code-beginning ()
+  "Return position in the beginning of code."
+  (mwim-point-at (mwim-beginning-of-code)))
+
+(defun mwim-line-end ()
+  "Return position in the end of line.
+Use `mwim-end-of-line-function'."
+  (mwim-point-at (mwim-end-of-line)))
+
+(defun mwim-code-end ()
+  "Return position in the end of code."
+  (mwim-point-at (mwim-end-of-code)))
+
+
+;;; Moving commands
 
 (defun mwim-beginning-of-comment ()
   "Move point to the beginning of comment on the current line.
@@ -198,9 +227,8 @@ to the end of line."
   "Define `mwim-POSITION-of-OBJECT1-or-OBJECT2-or-...' command.
 POSITION is either `beginning' or `end'.
 OBJECT1 and OBJECT2 can be `line', `code' or `comment'."
-  (let* ((format-str  "mwim-%S-of-%S")
-         (object1     (car objects))
-         (direct-fun  (intern (format format-str position object1)))
+  (let* ((object1     (car objects))
+         (direct-fun  (intern (format "mwim-%S-of-%S" position object1)))
          (fun-name    (intern
                        (concat "mwim-" (symbol-name position) "-of-"
                                (mapconcat #'symbol-name objects "-or-")))))
@@ -223,7 +251,7 @@ See `forward-line' for details.")
        (if (or (null arg) (= 0 arg))
            (mwim-goto-next-position
              ,@(mapcar (lambda (object)
-                         `(,(intern (format format-str position object))))
+                         `(,(intern (format "mwim-%S-%S" object position))))
                        objects))
          (forward-line arg)
          (,direct-fun)))))
