@@ -61,14 +61,19 @@ Move the point to the beginning/end of code or line."
                  (function :tag "Another function"))
   :group 'mwim)
 
+
+;;; Calculating positions
+
 (defmacro mwim-point-at (&rest body)
-  "Return point after evaluating BODY in `save-excursion'."
+  "Return point position after evaluating BODY in `save-excursion'."
   (declare (debug t) (indent 0))
   `(save-excursion ,@body (point)))
 
-(defmacro mwim-first-position (position &rest expressions)
+(defun mwim-first-position (expressions &optional position)
   "Return the first point position that is not POSITION from
 positions defined after evaluating EXPRESSIONS.
+
+If POSITION is nil, use the current point position.
 
 Initially, the first expression is evaluated.  If the resulting
 position is not the same as POSITION, return it.  Otherwise,
@@ -76,20 +81,19 @@ evaluate the second expression, etc.
 
 If after evaluating all EXPRESSIONS, all resulting positions are
 the same as POSITION, return nil."
-  (declare (indent 1))
-  (when expressions
-    (let ((pos-var   (make-symbol "pos"))
-          (first-exp (car expressions))
-          (rest-exps (cdr expressions)))
-      `(let ((,pos-var ,first-exp))
-         (if (or (null ,pos-var)
-                 (= ,position ,pos-var))
-             (mwim-first-position ,position ,@rest-exps)
-           ,pos-var)))))
+  (or position (setq position (point)))
+  (pcase expressions
+    (`(,first . ,rest)
+     (let ((pos (eval first)))
+       (if (and pos (/= pos position))
+           pos
+         (mwim-first-position rest position))))))
 
-(defmacro mwim-next-position (position fallback-position &rest expressions)
+(defun mwim-next-position (expressions &optional position fallback-position)
   "Return the next point position after POSITION from positions
 defined after evaluating EXPRESSIONS.
+
+If POSITION is nil, use the current point position.
 
 Initially, the first expression is evaluated.  If the resulting
 position is the same as POSITION, return position defined after
@@ -99,28 +103,24 @@ the second position with POSITION, etc.
 If after evaluating all EXPRESSIONS, POSITION is not one of the
 found positions, return FALLBACK-POSITION.  If it is nil, return
 the first position."
-  (declare (indent 2))
-  (if (null expressions)
-      fallback-position
-    (let ((pos-var   (make-symbol "pos"))
-          (first-exp (car expressions))
-          (rest-exps (cdr expressions)))
-      `(let ((,pos-var ,first-exp))
-         (if (and ,pos-var (= ,position ,pos-var))
-             (or (mwim-first-position ,position ,@rest-exps)
-                 ,fallback-position
-                 ,position)
-           (mwim-next-position ,position ,(or fallback-position pos-var)
-             ,@rest-exps))))))
+  (or position (setq position (point)))
+  (pcase expressions
+    (`(,first . ,rest)
+     (let ((pos (eval first)))
+       (if (and pos (= pos position))
+           (or (mwim-first-position rest position)
+               fallback-position
+               pos)
+         (mwim-next-position rest position
+                             (or fallback-position pos)))))
+    ('() fallback-position)))
 
 (defmacro mwim-goto-next-position (&rest expressions)
   "Move point to position defined after evaluating the first expression.
 If the point is already there, move to the position defined after
 evaluating the second expression from the list of EXPRESSIONS, etc."
   (declare (indent 0))
-  (let ((point-var (make-symbol "pos")))
-    `(let ((,point-var (point)))
-       (goto-char (mwim-next-position ,point-var nil ,@expressions)))))
+  `(goto-char (mwim-next-position ',expressions)))
 
 
 ;;; Position functions
