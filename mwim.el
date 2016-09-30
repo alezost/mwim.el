@@ -115,12 +115,17 @@ the first position."
                              (or fallback-position pos)))))
     ('() fallback-position)))
 
-(defmacro mwim-goto-next-position (&rest expressions)
+(defun mwim-move-to-next-position (expressions)
   "Move point to position defined after evaluating the first expression.
 If the point is already there, move to the position defined after
 evaluating the second expression from the list of EXPRESSIONS, etc."
+  (let ((pos (mwim-next-position expressions)))
+    (when pos (goto-char pos))))
+
+(defmacro mwim-goto-next-position (&rest expressions)
+  "Wrapper for `mwim-move-to-next-position'."
   (declare (indent 0))
-  `(goto-char (mwim-next-position ',expressions)))
+  `(mwim-move-to-next-position ',expressions))
 
 
 ;;; Position functions
@@ -249,10 +254,10 @@ See `forward-line' for details.")
           (when current-prefix-arg
             (list (prefix-numeric-value current-prefix-arg)))))
        (if (or (null arg) (= 0 arg))
-           (mwim-goto-next-position
-             ,@(mapcar (lambda (object)
-                         `(,(intern (format "mwim-%S-%S" object position))))
-                       objects))
+           (mwim-move-to-next-position
+            ',(mapcar (lambda (object)
+                        `(,(intern (format "mwim-%S-%S" object position))))
+                      objects))
          (forward-line arg)
          (,direct-fun)))))
 
