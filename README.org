@@ -111,3 +111,21 @@ can bind them like this:
 (global-set-key [remap move-beginning-of-line] #'mwim-beginning)
 (global-set-key [remap move-end-of-line] #'mwim-end)
 #+END_SRC
+
+** Define your own commands
+
+Finally, you can define your own commands using
+=mwim-goto-next-position= macro.  For example, if you want to switch
+between all positions using a single key, you can define a command like
+this one:
+
+#+BEGIN_SRC emacs-lisp
+(defun mwim ()
+  "Switch between code beginning, line beginning, code end and line end."
+  (interactive "^")
+  (mwim-goto-next-position
+    (mwim-code-beginning)
+    (mwim-line-beginning)
+    (mwim-code-end)
+    (mwim-line-end)))
+#+END_SRC
