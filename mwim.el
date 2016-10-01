@@ -49,14 +49,14 @@
 Move the point to the beginning/end of code or line."
   :group 'convenience)
 
-(defcustom mwim-beginning-of-line-function #'beginning-of-visual-line
+(defcustom mwim-beginning-of-line-function #'beginning-of-line
   "Function used to move the point to the beginning of line."
   :type '(choice (function-item beginning-of-visual-line)
                  (function-item beginning-of-line)
                  (function :tag "Another function"))
   :group 'mwim)
 
-(defcustom mwim-end-of-line-function #'end-of-visual-line
+(defcustom mwim-end-of-line-function #'end-of-line
   "Function used to move the point to the end of line."
   :type '(choice (function-item end-of-visual-line)
                  (function-item end-of-line)
