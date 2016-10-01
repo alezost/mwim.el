@@ -31,6 +31,8 @@
 ;; To install the package manually, add the following to your init file:
 ;;
 ;;   (add-to-list 'load-path "/path/to/mwim-dir")
+;;   (autoload 'mwim-beginning "mwim" nil t)
+;;   (autoload 'mwim-end "mwim" nil t)
 ;;   (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
 ;;   (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
 ;;   (autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
@@ -38,7 +40,7 @@
 ;;   (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 
 ;; Then you can bind some keys to some of those commands and start
-;; moving.
+;; moving.  See README in the source repo for more details.
 
 ;;; Code:
 
@@ -181,6 +183,35 @@ Use `mwim-end-of-line-function'."
 
 
 ;;; Moving commands
+
+(defvar mwim-beginning-expressions
+  '((mwim-code-beginning)
+    (mwim-line-beginning))
+  "List of expressions used by `\\[mwim-beginning]' command.
+Each expression should return either a number (point position) or
+nil (if this position should be skipped) after evaluating.")
+
+(defvar mwim-end-expressions
+  '((mwim-code-end)
+    (mwim-line-end))
+  "List of expressions used by `\\[mwim-end]' command.
+See also `mwim-beginning-expressions'.")
+
+;;;###autoload
+(defun mwim-beginning ()
+  "Move point to a beginning position.
+Move to the next position defined by `mwim-beginning-expressions'.
+See `mwim-move-to-next-position' for details."
+  (interactive "^")
+  (mwim-move-to-next-position mwim-beginning-expressions))
+
+;;;###autoload
+(defun mwim-end ()
+  "Move point to an end position.
+Move to the next position defined by `mwim-end-expressions'.
+See `mwim-move-to-next-position' for details."
+  (interactive "^")
+  (mwim-move-to-next-position mwim-end-expressions))
 
 (defun mwim-beginning-of-comment ()
   "Move point to the beginning of comment on the current line.

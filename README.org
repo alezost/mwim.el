@@ -24,6 +24,8 @@ For the manual installation, clone the repo, add the directory to
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "/path/to/mwim-dir")
+(autoload 'mwim-beginning "mwim" nil t)
+(autoload 'mwim-end "mwim" nil t)
 (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
 (autoload 'mwim-beginning-of-line-or-code "mwim" nil t)
 (autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
@@ -32,6 +34,8 @@ For the manual installation, clone the repo, add the directory to
 #+END_SRC
 
 * Usage
+
+** Simple commands
 
 As you can see in the gif demonstration:
 
@@ -51,13 +55,6 @@ You may bind some keys to some of those commands in a usual manner, for
 example:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key [remap move-beginning-of-line] #'mwim-beginning-of-code-or-line)
-(global-set-key [remap move-end-of-line] #'mwim-end-of-code-or-line)
-#+END_SRC
-
-or:
-
-#+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-a") 'mwim-beginning-of-code-or-line)
 (global-set-key (kbd "C-e") 'mwim-end-of-code-or-line)
 (global-set-key (kbd "<home>") 'mwim-beginning-of-line-or-code)
@@ -68,3 +65,49 @@ Note that =shift-selection= is supported by all MWIM commands, which
 means if you press =Shift= with the bound keys (for example,
 =<S-home>=), the region of text will be selected (see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection][Emacs manual]] for
 details).
+
+** Move where you really want
+
+Along with the described simple commands, there are more general =M-x
+mwim-beginning= and =M-x mwim-end= commands, that allow you to switch
+between any positions you want.  By default, they do the same as
+=mwim-beginning-of-code-or-line= and =mwim-end-of-code-or-line=, however
+you can configure switching positions for these commands with
+=mwim-beginning-expressions= and =mwim-end-expressions= variables.
+
+These variables are lists of expressions that should return a new point
+position after evaluating.  For example, after:
+
+#+BEGIN_SRC emacs-lisp
+(setq mwim-beginning-expressions
+      '((+ 2 (line-beginning-position))
+        (mwim-code-beginning)))
+#+END_SRC
+
+=M-x mwim-beginning= will switch between the third character (the second
+counting from 0) on the current line and the code beginning position.
+
+You can also make mode-specific positions by making these variables
+local.  Let's say, for =emacs-lisp-mode=, you want a usual switch
+between the code end and line end when you call =M-x mwim-end=; but if
+there is a comment on the current line, you want to move to the
+beginning of this comment instead of the code end position.  You can do
+it like this:
+
+#+BEGIN_SRC emacs-lisp
+(defun my/setup-elisp-mwim-positions ()
+  (setq-local mwim-end-expressions
+              '((or (mwim-line-comment-beginning)
+                    (mwim-code-end))
+                (mwim-line-end))))
+
+(add-hook 'emacs-lisp-mode-hook 'my/setup-elisp-mwim-positions)
+#+END_SRC
+
+So, if you want to use these commands instead of the Emacs defaults, you
+can bind them like this:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [remap move-beginning-of-line] #'mwim-beginning)
+(global-set-key [remap move-end-of-line] #'mwim-end)
+#+END_SRC
