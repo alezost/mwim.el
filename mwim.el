@@ -106,13 +106,17 @@ the first position."
   (or position (setq position (point)))
   (pcase expressions
     (`(,first . ,rest)
-     (let ((pos (eval first)))
-       (if (and pos (= pos position))
-           (or (mwim-first-position rest position)
-               fallback-position
-               pos)
-         (mwim-next-position rest position
-                             (or fallback-position pos)))))
+     ;; If the last expression is reached, there is no point to evaluate
+     ;; it, as the point should be moved to the first position anyway.
+     (if (and (null rest) fallback-position)
+         fallback-position
+       (let ((pos (eval first)))
+         (if (and pos (= pos position))
+             (or (mwim-first-position rest position)
+                 fallback-position
+                 pos)
+           (mwim-next-position rest position
+                               (or fallback-position pos))))))
     ('() fallback-position)))
 
 (defun mwim-move-to-next-position (expressions)
