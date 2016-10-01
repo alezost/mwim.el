@@ -2,7 +2,7 @@
 [[http://melpa.org/#/mwim][file:http://melpa.org/packages/mwim-badge.svg]]
 [[http://stable.melpa.org/#/mwim][file:http://stable.melpa.org/packages/mwim-badge.svg]]
 
-** About
+* About
 
 This Emacs package provides commands for moving to the beginning/end of
 code, line or comment.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code
@@ -10,14 +10,14 @@ from this page is used).  =mwim= stands for =Move Where I Mean=.
 
 [[file:demo.gif]]
 
-** Installation
+* Installation
 
-*** Automatic
+** Automatic
 
 This package can be installed from [[http://melpa.org/][MELPA]] (with =M-x package-install= or
 =M-x list-packages=).
 
-*** Manual
+** Manual
 
 For the manual installation, clone the repo, add the directory to
 =load-path= and add autoloads for the commands for moving:
@@ -31,7 +31,7 @@ For the manual installation, clone the repo, add the directory to
 (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 #+END_SRC
 
-** Usage
+* Usage
 
 As you can see in the gif demonstration:
 
@@ -64,6 +64,7 @@ or:
 (global-set-key (kbd "<end>") 'mwim-end-of-line-or-code)
 #+END_SRC
 
-Note that =shift-selection= is supported, which means if you press
-=Shift= with the bound MWIM keys (for example, =<S-home>=), the region
-of text will be selected (see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection][Emacs manual]] for details).
+Note that =shift-selection= is supported by all MWIM commands, which
+means if you press =Shift= with the bound keys (for example,
+=<S-home>=), the region of text will be selected (see [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection][Emacs manual]] for
+details).
