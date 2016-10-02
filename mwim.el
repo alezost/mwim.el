@@ -106,20 +106,21 @@ If after evaluating all EXPRESSIONS, POSITION is not one of the
 found positions, return FALLBACK-POSITION.  If it is nil, return
 the first position."
   (or position (setq position (point)))
-  (pcase expressions
-    (`(,first . ,rest)
-     ;; If the last expression is reached, there is no point to evaluate
-     ;; it, as the point should be moved to the first position anyway.
-     (if (and (null rest) fallback-position)
-         fallback-position
-       (let ((pos (eval first)))
-         (if (and pos (= pos position))
-             (or (mwim-first-position rest position)
-                 fallback-position
-                 pos)
-           (mwim-next-position rest position
-                               (or fallback-position pos))))))
-    ('() fallback-position)))
+  (if (null expressions)
+      fallback-position
+    (pcase expressions
+      (`(,first . ,rest)
+       ;; If the last expression is reached, there is no point to evaluate
+       ;; it, as the point should be moved to the first position anyway.
+       (if (and (null rest) fallback-position)
+           fallback-position
+         (let ((pos (eval first)))
+           (if (and pos (= pos position))
+               (or (mwim-first-position rest position)
+                   fallback-position
+                   pos)
+             (mwim-next-position rest position
+                                 (or fallback-position pos)))))))))
 
 (defun mwim-move-to-next-position (expressions)
   "Move point to position defined after evaluating the first expression.
