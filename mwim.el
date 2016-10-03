@@ -160,9 +160,16 @@ Return nil, if there is no comment beginning on the current line."
          (<= (line-beginning-position) beg)
          beg)))
 
-;; For using in `mwim-define-command' macro to generate commands to move
-;; to the beginning of comment.
-(defalias 'mwim-comment-beginning #'mwim-line-comment-beginning)
+(defun mwim-line-comment-text-beginning ()
+  "Return position of a comment start on the current line.
+Comment start means beginning of the text inside the comment.
+Return nil, if there is no comment beginning on the current line."
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (let ((beg (comment-search-forward (line-end-position) t)))
+      (when beg (point)))))
+
+(defalias 'mwim-comment-beginning #'mwim-line-comment-text-beginning)
 
 (defun mwim-line-beginning ()
   "Return position in the beginning of line.

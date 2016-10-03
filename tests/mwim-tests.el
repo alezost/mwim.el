@@ -73,7 +73,7 @@ int foo;  /* comment */
 (ert-deftest mwim-test-beginning-of-code-or-line-or-comment ()
   (mwim-test-with-sample mwim-test-elisp-sample
     (mwim-beginning-of-code-or-line-or-comment)
-    (should (= (point) 12))
+    (should (= (point) 14))
     (mwim-beginning-of-code-or-line-or-comment)
     (should (= (point) 3))
     (mwim-beginning-of-code-or-line-or-comment)
@@ -85,17 +85,19 @@ int foo;  /* comment */
     (mwim-beginning-of-code-or-line-or-comment)
     (should (= (point) 22))
     (mwim-beginning-of-code-or-line-or-comment)
-    (should (= (point) 28)))
+    (should (= (point) 31)))
 
   (mwim-test-with-sample mwim-test-c-sample
     (mwim-beginning-of-code-or-line-or-comment)
-    (should (= (point) 11))
+    (should (= (point) 14))
     (mwim-beginning-of-code-or-line-or-comment)
     (should (= (point) 1))
     (mwim-beginning-of-code-or-line-or-comment 1)
     (should (= (point) 27))
     (mwim-beginning-of-code-or-line-or-comment)
-    (should (= (point) 25))))
+    (should (= (point) 25))
+    (mwim-beginning-of-code-or-line-or-comment)
+    (should (= (point) 30))))
 
 (ert-deftest mwim-test-end-of-code-or-line ()
   (mwim-test-with-sample mwim-test-elisp-sample
