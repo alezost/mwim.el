@@ -71,9 +71,10 @@ details).
 Along with the described simple commands, there are more general =M-x
 mwim-beginning= and =M-x mwim-end= commands, that allow you to switch
 between any positions you want.  By default, they do the same as
-=mwim-beginning-of-code-or-line= and =mwim-end-of-code-or-line=, however
-you can configure switching positions for these commands with
-=mwim-beginning-expressions= and =mwim-end-expressions= variables.
+=mwim-beginning-of-code-or-line-or-comment= and
+=mwim-end-of-code-or-line=, however you can configure switching
+positions for these commands with =mwim-beginning-expressions= and
+=mwim-end-expressions= variables.
 
 These variables are lists of expressions that should return a new point
 position after evaluating.  For example, after:

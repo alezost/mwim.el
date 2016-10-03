@@ -194,7 +194,8 @@ Use `mwim-end-of-line-function'."
 
 (defvar mwim-beginning-expressions
   '((mwim-code-beginning)
-    (mwim-line-beginning))
+    (mwim-line-beginning)
+    (mwim-comment-beginning))
   "List of expressions used by `\\[mwim-beginning]' command.
 Each expression should return either a number (point position) or
 nil (if this position should be skipped) after evaluating.")
