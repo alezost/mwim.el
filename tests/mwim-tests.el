@@ -57,7 +57,8 @@ int foo;  /* comment */
     (mwim-line-comment-beginning)
     (mwim-line-end)
     (+ 7 (line-beginning-position))
-    (mwim-code-beginning)))
+    (mwim-code-beginning)
+    (mwim-code-end)))
 
 (ert-deftest mwim-test-beginning-of-line-or-code ()
   (mwim-test-with-sample mwim-test-elisp-sample
@@ -153,6 +154,8 @@ int foo;  /* comment */
 
     (forward-line)
     (mwim-test-fancy-move)
+    (should (= (point) 56))
+    (mwim-test-fancy-move)
     (should (= (point) 58))
     (mwim-test-fancy-move)
     (should (= (point) 54))
@@ -161,13 +164,25 @@ int foo;  /* comment */
 
   (mwim-test-with-sample mwim-test-c-sample
     (mwim-test-fancy-move)
+    (should (= (point) 9))
+    (mwim-test-fancy-move)
     (should (= (point) 11))
     (mwim-test-fancy-move)
     (should (= (point) 24))
     (mwim-test-fancy-move)
     (should (= (point) 8))
     (mwim-test-fancy-move)
-    (should (= (point) 1))))
+    (should (= (point) 1))
+
+    (forward-line)
+    (mwim-test-fancy-move)
+    (should (= (point) 27))
+    (mwim-test-fancy-move)
+    (should (= (point) 35))
+    (mwim-test-fancy-move)
+    (should (= (point) 32))
+    (mwim-test-fancy-move)
+    (should (= (point) 33))))
 
 (provide 'mwim-tests)
 

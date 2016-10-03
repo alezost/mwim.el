@@ -64,6 +64,36 @@ Move the point to various line positions."
                  (function :tag "Another function"))
   :group 'mwim)
 
+(defcustom mwim-next-position-function nil
+  "Function used to define the next position.
+
+This function is called with a list of functions returning
+available point positions as a single argument.  It should return
+the next position where the point will be moved.
+
+There are 2 functions to choose from: `mwim-next-position' and
+`mwim-next-unique-position'.
+
+`mwim-next-position' is faster as it calculates positions only
+when needed, however there are some special cases when this
+function will not return an expected position (when there are
+more than 3 potential positions, and some of them are the same).
+
+With `mwim-next-unique-position' you will always switch between
+all available positions, but it is slower as it calculates all
+positions at once.  Most likely, however, this slowness will be
+insignificant as the number of potential positions is not big.
+
+If this variable is nil, an appropriate function will be chosen
+automatically.  This is the recommended value, as it provides the
+speed when possible, and guaranteed cycling between all positions
+for complex cases."
+  :type '(choice (const nil :tag "Choose automatically")
+                 (function-item mwim-next-position)
+                 (function-item mwim-next-unique-position)
+                 (function :tag "Another function"))
+  :group 'mwim)
+
 
 ;;; Calculating positions
 
@@ -123,6 +153,30 @@ the first position."
              (mwim-next-position rest position
                                  (or fallback-position pos)))))))))
 
+(defun mwim-delq-dups (list)
+  "Like `delete-dups' but using `eq'."
+  (let ((tail list))
+    (while tail
+      (setcdr tail (delq (car tail) (cdr tail)))
+      (setq tail (cdr tail))))
+  list)
+
+(defun mwim-next-unique-position (functions &optional position)
+  "Return the next point position after POSITION from positions
+defined after calling FUNCTIONS.
+
+If POSITION is nil, use the current point position.
+
+Initially, all positions are calculated (all functions are
+called).  If POSITION is the same as one of the resulting
+positions, return the next one, otherwise return the first
+position."
+  (or position (setq position (point)))
+  (let* ((positions (mwim-delq-dups
+                     (delq nil (mapcar #'funcall functions))))
+         (next-positions (cdr (memq position positions))))
+    (car (or next-positions positions))))
+
 (defun mwim-move-to-next-position (functions)
   "Move point to position returned by the first function.
 If the point is already there, move to the position returned by
@@ -131,7 +185,11 @@ the second function, etc.
 FUNCTIONS are called without arguments and should return either a
 number (point position) or nil (if this position should be
 skipped)."
-  (let ((pos (mwim-next-position functions)))
+  (let ((pos (funcall (or mwim-next-position-function
+                          (if (> (length functions) 3)
+                              #'mwim-next-unique-position
+                            #'mwim-next-position))
+                      functions)))
     (when pos (goto-char pos))))
 
 ;; This macro is not really needed, it is an artifact from the past.  It
