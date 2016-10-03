@@ -1,4 +1,4 @@
-;;; mwim.el --- Move to the beginning/end of line or code  -*- lexical-binding: t -*-
+;;; mwim.el --- Switch between the beginning/end of line or code  -*- lexical-binding: t -*-
 
 ;; Copyright © 2015, 2016 Alex Kost
 
@@ -12,12 +12,12 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -25,8 +25,9 @@
 
 ;; MWIM stands for "Move Where I Mean".  This package is inspired by
 ;; <http://www.emacswiki.org/emacs/BackToIndentationOrBeginning>.  It
-;; provides commands for moving to the beginning/end of code, line or
-;; comment.
+;; provides commands to switch between various positions on the current
+;; line (particularly, to move to the beginning/end of code, line or
+;; comment).
 
 ;; To install the package manually, add the following to your init file:
 ;;
@@ -46,7 +47,7 @@
 
 (defgroup mwim nil
   "Move Where I Mean.
-Move the point to the beginning/end of code or line."
+Move the point to various line positions."
   :group 'convenience)
 
 (defcustom mwim-beginning-of-line-function #'beginning-of-line

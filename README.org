@@ -4,9 +4,10 @@
 
 * About
 
-This Emacs package provides commands for moving to the beginning/end of
-code, line or comment.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code
-from this page is used).  =mwim= stands for =Move Where I Mean=.
+This Emacs package provides several commands to switch between various
+line positions, like moving to the beginning/end of code, line or
+comment.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code from this
+page is used).  =mwim= stands for =Move Where I Mean=.
 
 [[file:demo.gif]]
 
