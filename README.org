@@ -74,16 +74,16 @@ mwim-beginning= and =M-x mwim-end= commands, that allow you to switch
 between any positions you want.  By default, they do the same as
 =mwim-beginning-of-code-or-line-or-comment= and
 =mwim-end-of-code-or-line=, however you can configure switching
-positions for these commands with =mwim-beginning-expressions= and
-=mwim-end-expressions= variables.
+positions for these commands with =mwim-beginning-functions= and
+=mwim-end-functions= variables.
 
-These variables are lists of expressions that should return a new point
-position after evaluating.  For example, after:
+These functions are called without arguments and they should return a
+new point position.  For example, after:
 
 #+BEGIN_SRC emacs-lisp
-(setq mwim-beginning-expressions
-      '((+ 2 (line-beginning-position))
-        (mwim-code-beginning)))
+(setq mwim-beginning-functions
+      (list (lambda () (+ 2 (line-beginning-position)))
+            'mwim-code-beginning))
 #+END_SRC
 
 =M-x mwim-beginning= will switch between the third character (the second
@@ -97,11 +97,14 @@ beginning of this comment instead of the code end position.  You can do
 it like this:
 
 #+BEGIN_SRC emacs-lisp
+(defun my/comment-beginning-or-code-end ()
+  (or (mwim-line-comment-beginning)
+      (mwim-code-end)))
+
 (defun my/setup-elisp-mwim-positions ()
-  (setq-local mwim-end-expressions
-              '((or (mwim-line-comment-beginning)
-                    (mwim-code-end))
-                (mwim-line-end))))
+  (setq-local mwim-end-functions
+              '(my/comment-beginning-or-code-end
+                mwim-line-end)))
 
 (add-hook 'emacs-lisp-mode-hook 'my/setup-elisp-mwim-positions)
 #+END_SRC
