@@ -21,10 +21,11 @@ This package can be installed from [[http://melpa.org/][MELPA]] (with =M-x packa
 ** Manual
 
 For the manual installation, clone the repo, add the directory to
-=load-path= and add autoloads for the commands for moving:
+=load-path= and add autoloads for the commands you need:
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "/path/to/mwim-dir")
+(autoload 'mwim "mwim" nil t)
 (autoload 'mwim-beginning "mwim" nil t)
 (autoload 'mwim-end "mwim" nil t)
 (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
@@ -77,8 +78,12 @@ between any positions you want.  By default, they do the same as
 positions for these commands with =mwim-beginning-functions= and
 =mwim-end-functions= variables.
 
-These functions are called without arguments and they should return a
-new point position.  For example, after:
+And if you wish to use a single key to switch between all these
+positions, you can use =mwim= command.
+
+The functions from =mwim-beginning-functions= and =mwim-end-functions=
+variables are called without arguments and they should return a new
+point position.  For example, after:
 
 #+BEGIN_SRC emacs-lisp
 (setq mwim-beginning-functions
@@ -113,6 +118,7 @@ So, if you want to use these commands instead of the Emacs defaults, you
 can bind them like this:
 
 #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<C-tab>") #'mwim)
 (global-set-key [remap move-beginning-of-line] #'mwim-beginning)
 (global-set-key [remap move-end-of-line] #'mwim-end)
 #+END_SRC
@@ -120,17 +126,5 @@ can bind them like this:
 ** Define your own commands
 
 Finally, you can define your own commands using
-=mwim-goto-next-position= macro.  For example, if you want to switch
-between all positions using a single key, you can define a command like
-this one:
-
-#+BEGIN_SRC emacs-lisp
-(defun mwim ()
-  "Switch between code beginning, line beginning, code end and line end."
-  (interactive "^")
-  (mwim-goto-next-position
-    (mwim-code-beginning)
-    (mwim-line-beginning)
-    (mwim-code-end)
-    (mwim-line-end)))
-#+END_SRC
+=mwim-move-to-next-position= macro.  See the code of =mwim=,
+=mwim-beginning= or =mwim-end= commands for examples.

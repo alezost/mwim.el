@@ -32,6 +32,7 @@
 ;; To install the package manually, add the following to your init file:
 ;;
 ;;   (add-to-list 'load-path "/path/to/mwim-dir")
+;;   (autoload 'mwim "mwim" nil t)
 ;;   (autoload 'mwim-beginning "mwim" nil t)
 ;;   (autoload 'mwim-end "mwim" nil t)
 ;;   (autoload 'mwim-beginning-of-code-or-line "mwim" nil t)
@@ -400,6 +401,17 @@ See `forward-line' for details.")
 ;;;###autoload (autoload 'mwim-beginning-of-code-or-line-or-comment "mwim" nil t)
 ;;;###autoload (autoload 'mwim-end-of-line-or-code "mwim" nil t)
 ;;;###autoload (autoload 'mwim-end-of-code-or-line "mwim" nil t)
+
+;;;###autoload
+(defun mwim (&optional arg)
+  "Switch between various positions on the current line.
+The positions are defined by using both
+`mwim-beginning-functions' and `mwim-end-functions'.
+Interactively, with prefix argument, move to the previous position."
+  (interactive "^P")
+  (mwim-move-to-next-position (append mwim-beginning-functions
+                                      mwim-end-functions)
+                              (if arg #'> #'<)))
 
 (provide 'mwim)
 
