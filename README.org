@@ -128,3 +128,8 @@ can bind them like this:
 Finally, you can define your own commands using
 =mwim-move-to-next-position= macro.  See the code of =mwim=,
 =mwim-beginning= or =mwim-end= commands for examples.
+
+* Acknowledgments
+
+Many thanks to Adam Porter, who wrote [[https://github.com/alphapapa/mosey.el][mosey.el]] package, which provides
+similar facilities as =mwim.el=.  Several ideas were taken from it.
