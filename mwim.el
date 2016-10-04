@@ -95,6 +95,21 @@ for complex cases."
                  (function :tag "Another function"))
   :group 'mwim)
 
+(defcustom mwim-beginning-position-functions
+  '(mwim-code-beginning
+    mwim-line-beginning
+    mwim-comment-beginning)
+  "List of functions used by `\\[mwim-beginning]' command."
+  :type '(repeat function)
+  :group 'mwim)
+
+(defcustom mwim-end-position-functions
+  '(mwim-code-end
+    mwim-line-end)
+  "List of functions used by `\\[mwim-end]' command."
+  :type '(repeat function)
+  :group 'mwim)
+
 
 ;;; Calculating positions
 
@@ -274,39 +289,6 @@ Use `mwim-end-of-line-function'."
 
 ;;; Moving commands
 
-(defvar mwim-beginning-functions
-  '(mwim-code-beginning
-    mwim-line-beginning
-    mwim-comment-beginning)
-  "List of functions used by `\\[mwim-beginning]' command.")
-
-(defvar mwim-end-functions
-  '(mwim-code-end
-    mwim-line-end)
-  "List of functions used by `\\[mwim-end]' command.")
-
-;;;###autoload
-(defun mwim-beginning (&optional arg)
-  "Move point to the next position defined by `mwim-beginning-functions'.
-See `mwim-move-to-next-position' for details.
-Interactively, with prefix argument, move to the previous position."
-  (interactive "^P")
-  (mwim-move-to-next-position
-   (if arg
-       (reverse mwim-beginning-functions)
-     mwim-beginning-functions)))
-
-;;;###autoload
-(defun mwim-end (&optional arg)
-  "Move point to the next position defined by `mwim-end-functions'.
-See `mwim-move-to-next-position' for details.
-Interactively, with prefix argument, move to the previous position."
-  (interactive "^P")
-  (mwim-move-to-next-position
-   (if arg
-       (reverse mwim-end-functions)
-     mwim-end-functions)))
-
 (defun mwim-beginning-of-comment ()
   "Move point to the beginning of comment on the current line.
 If the comment does not exist, do nothing."
@@ -403,14 +385,41 @@ See `forward-line' for details.")
 ;;;###autoload (autoload 'mwim-end-of-code-or-line "mwim" nil t)
 
 ;;;###autoload
-(defun mwim (&optional arg)
-  "Switch between various positions on the current line.
-The positions are defined by using both
-`mwim-beginning-functions' and `mwim-end-functions'.
+(defun mwim-beginning (&optional arg)
+  "Move point to the next beginning position
+Available positions are defined by `mwim-beginning-position-functions'.
+See `mwim-move-to-next-position' for details.
 Interactively, with prefix argument, move to the previous position."
   (interactive "^P")
-  (mwim-move-to-next-position (append mwim-beginning-functions
-                                      mwim-end-functions)
+  (mwim-move-to-next-position
+   (if arg
+       (reverse mwim-beginning-position-functions)
+     mwim-beginning-position-functions)))
+
+;;;###autoload
+(defun mwim-end (&optional arg)
+  "Move point to the next end position.
+Available positions are defined by `mwim-end-position-functions'.
+See `mwim-move-to-next-position' for details.
+Interactively, with prefix argument, move to the previous position."
+  (interactive "^P")
+  (mwim-move-to-next-position
+   (if arg
+       (reverse mwim-end-position-functions)
+     mwim-end-position-functions)))
+
+;;;###autoload
+(defun mwim (&optional arg)
+  "Switch between various positions on the current line.
+
+Available positions are defined by using both
+`mwim-beginning-position-functions' and
+`mwim-end-position-functions'.
+
+Interactively, with prefix argument, move to the previous position."
+  (interactive "^P")
+  (mwim-move-to-next-position (append mwim-beginning-position-functions
+                                      mwim-end-position-functions)
                               (if arg #'> #'<)))
 
 (provide 'mwim)
