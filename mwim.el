@@ -161,7 +161,8 @@ the first position."
       (setq tail (cdr tail))))
   list)
 
-(defun mwim-next-unique-position (functions &optional position)
+(defun mwim-next-unique-position (functions &optional position
+                                            sort-predicate)
   "Return the next point position after POSITION from positions
 defined after calling FUNCTIONS.
 
@@ -170,26 +171,39 @@ If POSITION is nil, use the current point position.
 Initially, all positions are calculated (all functions are
 called).  If POSITION is the same as one of the resulting
 positions, return the next one, otherwise return the first
-position."
+position.
+
+If SORT-PREDICATE is non-nil, it should be a function taken by
+`sort'.  It is used to sort available positions, so most likely
+you want to use either `<' or `>' for SORT-PREDICATE."
   (or position (setq position (point)))
   (let* ((positions (mwim-delq-dups
                      (delq nil (mapcar #'funcall functions))))
+         (positions (if sort-predicate
+                        (sort positions sort-predicate)
+                      positions))
          (next-positions (cdr (memq position positions))))
     (car (or next-positions positions))))
 
-(defun mwim-move-to-next-position (functions)
+(defun mwim-move-to-next-position (functions &optional sort-predicate)
   "Move point to position returned by the first function.
 If the point is already there, move to the position returned by
 the second function, etc.
 
 FUNCTIONS are called without arguments and should return either a
 number (point position) or nil (if this position should be
-skipped)."
-  (let ((pos (funcall (or mwim-next-position-function
-                          (if (> (length functions) 3)
-                              #'mwim-next-unique-position
-                            #'mwim-next-position))
-                      functions)))
+skipped).
+
+If SORT-PREDICATE is non-nil, `mwim-next-unique-position' is
+called with it."
+  (let ((pos (if sort-predicate
+                 (mwim-next-unique-position functions (point)
+                                            sort-predicate)
+               (funcall (or mwim-next-position-function
+                            (if (> (length functions) 3)
+                                #'mwim-next-unique-position
+                              #'mwim-next-position))
+                        functions))))
     (when pos (goto-char pos))))
 
 ;; This macro is not really needed, it is an artifact from the past.  It
