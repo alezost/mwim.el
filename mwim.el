@@ -271,18 +271,26 @@ Use `mwim-end-of-line-function'."
   "List of functions used by `\\[mwim-end]' command.")
 
 ;;;###autoload
-(defun mwim-beginning ()
+(defun mwim-beginning (&optional arg)
   "Move point to the next position defined by `mwim-beginning-functions'.
-See `mwim-move-to-next-position' for details."
-  (interactive "^")
-  (mwim-move-to-next-position mwim-beginning-functions))
+See `mwim-move-to-next-position' for details.
+Interactively, with prefix argument, move to the previous position."
+  (interactive "^P")
+  (mwim-move-to-next-position
+   (if arg
+       (reverse mwim-beginning-functions)
+     mwim-beginning-functions)))
 
 ;;;###autoload
-(defun mwim-end ()
+(defun mwim-end (&optional arg)
   "Move point to the next position defined by `mwim-end-functions'.
-See `mwim-move-to-next-position' for details."
-  (interactive "^")
-  (mwim-move-to-next-position mwim-end-functions))
+See `mwim-move-to-next-position' for details.
+Interactively, with prefix argument, move to the previous position."
+  (interactive "^P")
+  (mwim-move-to-next-position
+   (if arg
+       (reverse mwim-end-functions)
+     mwim-end-functions)))
 
 (defun mwim-beginning-of-comment ()
   "Move point to the beginning of comment on the current line.
