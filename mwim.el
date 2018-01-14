@@ -1,6 +1,6 @@
 ;;; mwim.el --- Switch between the beginning/end of line or code  -*- lexical-binding: t -*-
 
-;; Copyright © 2015, 2016 Alex Kost
+;; Copyright © 2015, 2016, 2018 Alex Kost
 
 ;; Author: Alex Kost <alezost@gmail.com>
 ;; Created: 9 Jan 2015
@@ -96,7 +96,8 @@ for complex cases."
   :group 'mwim)
 
 (defcustom mwim-beginning-position-functions
-  '(mwim-code-beginning
+  '(mwim-block-beginning
+    mwim-code-beginning
     mwim-line-beginning
     mwim-comment-beginning)
   "List of functions used by `\\[mwim-beginning]' command."
@@ -104,7 +105,8 @@ for complex cases."
   :group 'mwim)
 
 (defcustom mwim-end-position-functions
-  '(mwim-code-end
+  '(mwim-block-end
+    mwim-code-end
     mwim-line-end)
   "List of functions used by `\\[mwim-end]' command."
   :type '(repeat function)
@@ -285,6 +287,22 @@ Use `mwim-end-of-line-function'."
 (defun mwim-code-end ()
   "Return position in the end of code."
   (mwim-point-at (mwim-end-of-code)))
+
+(defun mwim-block-beginning ()
+  "Return position in the beginning of code or comment.
+If the point is inside a comment, return beginning position of
+the current comment, otherwise - of the code."
+  (if (mwim-current-comment-beginning)
+      (mwim-comment-beginning)
+    (mwim-code-beginning)))
+
+(defun mwim-block-end ()
+  "Return position in the end of code or line.
+If the point is inside a comment, return end position of
+the current comment, otherwise - of the code."
+  (if (mwim-current-comment-beginning)
+      (mwim-line-end)
+    (mwim-code-end)))
 
 
 ;;; Moving commands
