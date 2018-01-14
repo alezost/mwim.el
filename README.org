@@ -79,7 +79,8 @@ positions for these commands with =mwim-beginning-position-functions=
 and =mwim-end-position-functions= variables.
 
 And if you wish to use a single key to switch between all these
-positions, you can use =mwim= command.
+positions, you can use =M-x mwim= command (controlled by
+=mwim-position-functions= variable).
 
 The position functions from the mentioned variables variables are called
 without arguments and they should return a new point position.  For

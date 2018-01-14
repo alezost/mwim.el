@@ -112,6 +112,16 @@ for complex cases."
   :type '(repeat function)
   :group 'mwim)
 
+(defcustom mwim-position-functions
+  '(mwim-line-beginning
+    mwim-code-beginning
+    mwim-comment-beginning
+    mwim-code-end
+    mwim-line-end)
+  "List of functions used by `\\[mwim]' command."
+  :type '(repeat function)
+  :group 'mwim)
+
 
 ;;; Calculating positions
 
@@ -429,15 +439,11 @@ Interactively, with prefix argument, move to the previous position."
 ;;;###autoload
 (defun mwim (&optional arg)
   "Switch between various positions on the current line.
-
-Available positions are defined by using both
-`mwim-beginning-position-functions' and
-`mwim-end-position-functions'.
-
+Available positions are defined by `mwim-position-functions'
+variable.
 Interactively, with prefix argument, move to the previous position."
   (interactive "^P")
-  (mwim-move-to-next-position (append mwim-beginning-position-functions
-                                      mwim-end-position-functions)
+  (mwim-move-to-next-position mwim-position-functions
                               (if arg #'> #'<)))
 
 (provide 'mwim)
