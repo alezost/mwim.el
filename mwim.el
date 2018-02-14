@@ -51,17 +51,31 @@
 Move the point to various line positions."
   :group 'convenience)
 
-(defcustom mwim-beginning-of-line-function #'beginning-of-line
-  "Function used to move the point to the beginning of line."
+(defcustom mwim-beginning-of-line-function
+  '((t . beginning-of-line)
+    (org-mode . org-beginning-of-line))
+  "Function(s) used to move the point to the beginning of line.
+Can either be a function or an alist of the following form:
+
+  ((MODE-NAME . FUNCTION) ...)
+
+where MODE-NAME is either a `major-mode' name or `t' (used as a
+default value for any unspecified mode), and FUNCTION is the
+moving function for this mode."
   :type '(choice (function-item beginning-of-visual-line)
                  (function-item beginning-of-line)
+                 (alist :key-type symbol :value-type function)
                  (function :tag "Another function"))
   :group 'mwim)
 
-(defcustom mwim-end-of-line-function #'end-of-line
-  "Function used to move the point to the end of line."
+(defcustom mwim-end-of-line-function
+  '((t . end-of-line)
+    (org-mode . org-end-of-line))
+  "Function(s) used to move the point to the end of line.
+See also `mwim-beginning-of-line-function'."
   :type '(choice (function-item end-of-visual-line)
                  (function-item end-of-line)
+                 (alist :key-type symbol :value-type function)
                  (function :tag "Another function"))
   :group 'mwim)
 
@@ -121,6 +135,17 @@ for complex cases."
   "List of functions used by `\\[mwim]' command."
   :type '(repeat function)
   :group 'mwim)
+
+(defun mwim-function (fun-or-alist)
+  "Return function depending on FUN-OR-ALIST and the current `major-mode'.
+FUN-OR-ALIST should have the same form as
+`mwim-beginning-of-line-function' variable."
+  (cond
+   ((functionp fun-or-alist)
+    fun-or-alist)
+   ((listp fun-or-alist)
+    (or (cdr (assq major-mode fun-or-alist))
+        (cdr (assq t fun-or-alist))))))
 
 
 ;;; Calculating positions
@@ -329,17 +354,15 @@ If the comment does not exist, do nothing."
   "Move point to the beginning of line.
 Use `mwim-beginning-of-line-function'."
   (interactive "^")
-  (if (functionp mwim-beginning-of-line-function)
-      (funcall mwim-beginning-of-line-function)
-    (beginning-of-line)))
+  (funcall (or (mwim-function mwim-beginning-of-line-function)
+               #'beginning-of-line)))
 
 (defun mwim-end-of-line ()
   "Move point to the end of line.
 Use `mwim-end-of-line-function'."
   (interactive "^")
-  (if (functionp mwim-end-of-line-function)
-      (funcall mwim-end-of-line-function)
-    (end-of-line)))
+  (funcall (or (mwim-function mwim-end-of-line-function)
+               #'end-of-line)))
 
 (defun mwim-beginning-of-code ()
   "Move point to the first non-whitespace character on the current line."
