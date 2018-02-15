@@ -53,6 +53,7 @@ Move the point to various line positions."
 
 (defcustom mwim-beginning-of-line-function
   '((t . beginning-of-line)
+    (message-mode . message-beginning-of-line)
     (org-mode . org-beginning-of-line))
   "Function(s) used to move the point to the beginning of line.
 Can either be a function or an alist of the following form:
