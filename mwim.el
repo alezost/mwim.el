@@ -4,7 +4,7 @@
 
 ;; Author: Alex Kost <alezost@gmail.com>
 ;; Created: 9 Jan 2015
-;; Version: 0.3
+;; Version: 0.4
 ;; URL: https://github.com/alezost/mwim.el
 ;; Keywords: convenience
 
