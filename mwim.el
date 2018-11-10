@@ -299,10 +299,14 @@ Return nil, if there is no comment beginning on the current line."
   "Return position of a comment start on the current line.
 Comment start means beginning of the text inside the comment.
 Return nil, if there is no comment beginning on the current line."
-  (save-excursion
-    (goto-char (line-beginning-position))
-    (let ((beg (comment-search-forward (line-end-position) t)))
-      (when beg (point)))))
+  ;; If `comment-start-skip' is not set by a major mode (this is the
+  ;; case for `sql-mode', for example), then `comment-search-forward'
+  ;; errors, so check that `comment-start-skip' is not nil.
+  (when comment-start-skip
+    (save-excursion
+      (goto-char (line-beginning-position))
+      (let ((beg (comment-search-forward (line-end-position) t)))
+        (when beg (point))))))
 
 (defalias 'mwim-comment-beginning #'mwim-line-comment-text-beginning)
 
