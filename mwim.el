@@ -1,6 +1,6 @@
 ;;; mwim.el --- Switch between the beginning/end of line or code  -*- lexical-binding: t -*-
 
-;; Copyright © 2015, 2016, 2018 Alex Kost
+;; Copyright © 2015–2026 Alex Kost
 
 ;; Author: Alex Kost <alezost@gmail.com>
 ;; Created: 9 Jan 2015
@@ -104,7 +104,7 @@ If this variable is nil, an appropriate function will be chosen
 automatically.  This is the recommended value, as it provides the
 speed when possible, and guaranteed cycling between all positions
 for complex cases."
-  :type '(choice (const nil :tag "Choose automatically")
+  :type '(choice (const :tag "Choose automatically" nil)
                  (function-item mwim-next-position)
                  (function-item mwim-next-unique-position)
                  (function :tag "Another function"))
@@ -378,7 +378,7 @@ Use `mwim-end-of-line-function'."
 (defun mwim-end-of-code ()
   "Move point to the end of code.
 
-'End of code' means before a possible comment and trailing
+\"End of code\" means before a possible comment and trailing
 whitespaces.  Comments are recognized in any mode that sets
 `syntax-ppss' properly.
 
