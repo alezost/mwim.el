@@ -7,6 +7,7 @@
 ;; Version: 0.4
 ;; URL: https://github.com/alezost/mwim.el
 ;; Keywords: convenience
+;; Package-Requires: ((seq "2.24"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -45,6 +46,8 @@
 ;; moving.  See README in the source repo for more details.
 
 ;;; Code:
+
+(require 'seq)
 
 (defgroup mwim nil
   "Move Where I Mean.
@@ -207,14 +210,6 @@ the first position."
              (mwim-next-position rest position
                                  (or fallback-position pos)))))))))
 
-(defun mwim-delq-dups (list)
-  "Like `delete-dups' but using `eq'."
-  (let ((tail list))
-    (while tail
-      (setcdr tail (delq (car tail) (cdr tail)))
-      (setq tail (cdr tail))))
-  list)
-
 (defun mwim-next-unique-position (functions &optional position
                                             sort-predicate)
   "Return the next point position after POSITION from positions
@@ -231,8 +226,8 @@ If SORT-PREDICATE is non-nil, it should be a function taken by
 `sort'.  It is used to sort available positions, so most likely
 you want to use either `<' or `>' for SORT-PREDICATE."
   (or position (setq position (point)))
-  (let* ((positions (mwim-delq-dups
-                     (delq nil (mapcar #'funcall functions))))
+  (let* ((positions (seq-uniq (seq-keep #'funcall functions)
+                              #'eq))
          (positions (if sort-predicate
                         (sort positions sort-predicate)
                       positions))
