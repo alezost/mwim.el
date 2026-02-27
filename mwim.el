@@ -351,9 +351,8 @@ the current comment, otherwise - of the code."
   "Move point to the beginning of comment on the current line.
 If the comment does not exist, do nothing."
   (interactive "^")
-  (let ((comment-beg (mwim-line-comment-beginning)))
-    (when comment-beg
-      (goto-char comment-beg))))
+  (when-let* ((comment-beg (mwim-line-comment-beginning)))
+    (goto-char comment-beg)))
 
 (defun mwim-beginning-of-line ()
   "Move point to the beginning of line.
@@ -386,13 +385,12 @@ If current line is fully commented (contains only comment), move
 to the end of line."
   (interactive "^")
   (mwim-end-of-line)
-  (let ((comment-beg (mwim-line-comment-beginning)))
-    (when comment-beg
-      (let ((eoc (mwim-point-at
-                   (goto-char comment-beg)
-                   (skip-chars-backward " \t"))))
-        (when (< (line-beginning-position) eoc)
-          (goto-char eoc)))))
+  (when-let* ((comment-beg (mwim-line-comment-beginning)))
+    (let ((eoc (mwim-point-at
+                 (goto-char comment-beg)
+                 (skip-chars-backward " \t"))))
+      (when (< (line-beginning-position) eoc)
+        (goto-char eoc))))
   (skip-chars-backward " \t"))
 
 (defmacro mwim-define-command (position &rest objects)
