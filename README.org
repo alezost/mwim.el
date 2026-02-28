@@ -1,12 +1,12 @@
-[[http://www.gnu.org/licenses/gpl-3.0.txt][file:https://img.shields.io/badge/license-GPL_3-orange.svg]]
-[[http://melpa.org/#/mwim][file:http://melpa.org/packages/mwim-badge.svg]]
-[[http://stable.melpa.org/#/mwim][file:http://stable.melpa.org/packages/mwim-badge.svg]]
+[[https://www.gnu.org/licenses/gpl-3.0.txt][file:https://img.shields.io/badge/license-GPL_3-orange.svg]]
+[[https://melpa.org/#/mwim][file:https://melpa.org/packages/mwim-badge.svg]]
+[[https://stable.melpa.org/#/mwim][file:https://stable.melpa.org/packages/mwim-badge.svg]]
 
 * About
 
 This Emacs package provides several commands to switch between various
 line positions, like moving to the beginning/end of code, line or
-comment.  It is inspired by [[http://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code from this
+comment.  It is inspired by [[https://www.emacswiki.org/emacs/BackToIndentationOrBeginning][this EmacsWiki page]] (some code from this
 page is used).  =mwim= stands for =Move Where I Mean=.
 
 [[file:demo.gif]]
@@ -25,7 +25,7 @@ the following key bindings and see what happens:
 
 ** Automatic
 
-This package can be installed from [[http://melpa.org/][MELPA]] (with =M-x package-install= or
+This package can be installed from [[https://melpa.org/][MELPA]] (with =M-x package-install= or
 =M-x list-packages=).
 
 ** Manual
